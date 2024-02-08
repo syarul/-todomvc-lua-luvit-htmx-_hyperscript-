@@ -24,7 +24,7 @@ jobs:
       - name: Checkout subrepository
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/syarul/todomvc-hs.git
+          repository: syarul/todomvc-hs
           path: hs
 
       - name: Run Lua script
