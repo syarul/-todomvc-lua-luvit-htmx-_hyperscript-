@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y curl
-          curl -L https://github.com/luvit/luvit/releases/latest/download/luvit-2.16.0-linux-x64.tar.xz | sudo tar xJ -C /usr/local --strip-components=1
+          curl -L https://github.com/luvit/lit/raw/master/get-lit.sh | sh
 
       - name: Checkout subrepository
         uses: actions/checkout@v2
@@ -50,4 +50,3 @@ jobs:
 
       - name: Stop Luvit Server
         run: pkill luvit
-
