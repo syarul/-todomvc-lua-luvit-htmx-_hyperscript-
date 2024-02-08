@@ -20,10 +20,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl
           curl -L https://github.com/luvit/lit/raw/master/get-lit.sh | sh
-          export PATH=$PATH:$HOME/.lit/bin
-
-      - name: Display Luvit version
-        run: lit --version
 
       - name: Checkout subrepository
         uses: actions/checkout@v2
@@ -33,7 +29,7 @@ jobs:
 
       - name: Run Lua script
         run: |
-          luvit server.lua
+          ./luvit server.lua
 
       - uses: actions/setup-node@v3
         with:
