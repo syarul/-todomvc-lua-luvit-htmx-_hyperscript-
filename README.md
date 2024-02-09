@@ -9,6 +9,7 @@
     ===========================================================
             Build with LUA, LUVIT, HTMX & _HYPERSCRIPT
 
+[![Lua and Cypress Tests](https://github.com/syarul/todomvc-lua-luvit-htmx-_hyperscript/actions/workflows/luvit.yml/badge.svg)](https://github.com/syarul/todomvc-lua-luvit-htmx-_hyperscript/actions/workflows/luvit.yml)
 ### HTMX
 Visit [https://github.com/rajasegar/awesome-htmx](https://github.com/rajasegar/awesome-htmx) to look for HTMX curated infos
 
