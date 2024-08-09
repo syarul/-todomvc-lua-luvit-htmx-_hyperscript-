@@ -9,8 +9,8 @@ behavior ToggleAll
       end
   end
   on click
+    send toggle to <input.toggle/>
     fetch `/swap-json?all=${my.checked}` then
       send toggleFooter to <section.todoapp/>
       send show to <section.todoapp/>
       send toggleClearCompleted to <footer.footer/>
-    send toggle to <input.toggle/>
