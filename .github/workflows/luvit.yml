@@ -46,8 +46,8 @@ jobs:
       - name: Run Cypress Tests
         run: |
           cd cypress-example-todomvc
-          # npm run cypress:run
-          npm run cypress:run:chrome
+          npm run cypress:run
+          # npm run cypress:run:chrome
 
       - name: Stop Luvit Server
         run: pkill luvit
