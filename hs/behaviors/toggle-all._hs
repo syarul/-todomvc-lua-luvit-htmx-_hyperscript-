@@ -1,6 +1,6 @@
 behavior ToggleAll 
   on load set $toggleAll to me
-  on toggleAll debounced at 100ms
+  on toggleAll debounced at 10ms
     fetch /toggle-all then
       if it === "true" and my.checked === false then
         set my.checked to true
