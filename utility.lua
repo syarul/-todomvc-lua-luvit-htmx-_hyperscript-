@@ -30,7 +30,7 @@ end
 
 function utility.count(todos)
   local count = 0
-  for _, todo in pairs(todos) do
+  for _ in pairs(todos) do
       count = count + 1
   end
   return count

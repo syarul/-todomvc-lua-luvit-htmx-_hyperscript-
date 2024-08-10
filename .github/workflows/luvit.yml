@@ -31,8 +31,8 @@ jobs:
         run: |
           ./luvit server.lua &
 
-      - uses: browser-actions/setup-chrome@v1
-      - run: chrome --version
+      # - uses: browser-actions/setup-chrome@v1
+      # - run: chrome --version
 
       - uses: actions/setup-node@v3
         with:
@@ -49,8 +49,8 @@ jobs:
       - name: Run Cypress Tests
         run: |
           cd cypress-example-todomvc
-          # npm run cypress:run
-          npm run cypress:run:chrome
+          npm run cypress:run
+          # npm run cypress:run:chrome
 
       - name: Stop Luvit Server
         run: pkill luvit
