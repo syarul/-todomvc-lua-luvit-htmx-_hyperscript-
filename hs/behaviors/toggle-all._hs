@@ -8,7 +8,7 @@ behavior ToggleAll
         if my.checked === true and it === "false" then set my.checked to false
       end
   end
-  on click wait for 10ms
+  on click
     send toggle to <input.toggle/>
     fetch `/swap-json?all=${my.checked}` then
       send toggleFooter to <section.todoapp/>

@@ -37,6 +37,19 @@ local function unescape(str)
   return string.gsub(str, '^%s*(.-)%s*$', '%1')
 end
 
+local function render(res, html)
+  -- print(html)
+  res.statusCode = 200
+  if not html or html == '' or html == nil then
+    res:setHeader('Content-Type', 'text/plain')
+    res:finish('\n')
+  else
+    res:setHeader('Content-Type', 'text/html')
+    res:setHeader('Content-Length', #html)
+    res:finish(html)
+  end
+end
+
 local function SetHash(req, res)
   local parsedUrl = url.parse(req.url, true)
   local name = parsedUrl.query.name or "All"
@@ -47,9 +60,7 @@ local function SetHash(req, res)
 
   -- ptable(filters, 0)
 
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish('\n') --- luvit won't send empty string to client which needed by htmx:afterRequest or /fetch
+  render(res)
 end
 
 local function AddTodo(req, res)
@@ -78,9 +89,7 @@ local function AddTodo(req, res)
     html = todoItem.TodoItem(newTodo, filterName)
   end
 
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local function ToggleTodo(req, res)
@@ -98,17 +107,13 @@ local function ToggleTodo(req, res)
     end
   end
 
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local function Footer(_, res)
   local html = todoFooter.TodoFooter(todos, filters)
 
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local function UpdateCount(_, res)
@@ -120,15 +125,20 @@ local function UpdateCount(_, res)
 
   local str = string.format('<strong>%s</strong> item%s left', uncompletedCount, plural)
 
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(str)
+  render(res, str)
 end
 
-local function TodoJson(_, res)
+local function TodoJson(req, res)
+  local parsedUrl = url.parse(req.url, true)
+  local count = parsedUrl.query.count == 'true'
   res.statusCode = 200
-  res:setHeader('Content-Type', 'application/json')
-  res:finish(json.encode(todos))
+  if count then
+    res:setHeader('Content-Type', 'text/plain')
+    res:finish(string.format(utility.count(todos)))
+  else
+    res:setHeader('Content-Type', 'application/json')
+    res:finish(json.encode(todos))
+  end
 end
 
 local function SwapJson(req, res)
@@ -142,28 +152,23 @@ local function SwapJson(req, res)
       todo.done = false
     end
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish('\n')
+
+  render(res)
 end
 
 local function TodoCompleted(_, res)
   local hasCompleted = utility.hasCompleteTask(todos)
-  local html = '\n' -- luvit won't send empty string to client which needed by htmx:afterRequest or /fetch
+  local html
   if hasCompleted then
     html = clearCompleted.ClearCompleted(todos)
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+
+  render(res, html)
 end
 
 local function TodoToggleAll(_, res)
   local checked = utility.defChecked(todos)
-
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(tostring(checked))
+  render(res, tostring(checked))
 end
 
 local function TodoHandleItem(req, res)
@@ -178,9 +183,8 @@ local function TodoHandleItem(req, res)
       break
     end
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+
+  render(res, html)
 end
 
 local function EditHandlerTodo(req, res)
@@ -194,9 +198,8 @@ local function EditHandlerTodo(req, res)
       break
     end
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+
+  render(res, html)
 end
 
 local function UpdateTodo(req, res)
@@ -204,7 +207,7 @@ local function UpdateTodo(req, res)
   local id = tonumber(parsedUrl.query.id)
   local title = parsedUrl.query.title
 
-  local html = '\n' -- luvit won't send empty string to client which needed by htmx:afterRequest or /fetch
+  local html
   for index, todo in ipairs(todos) do
     if todo.id == id then
       if title and title ~= '' then
@@ -217,9 +220,8 @@ local function UpdateTodo(req, res)
       break
     end
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+
+  render(res, html)
 end
 
 local function RemoveTodo(req, res)
@@ -232,30 +234,23 @@ local function RemoveTodo(req, res)
       break
     end
   end
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish('\n')
+
+  render(res)
 end
 
 local function ToggleHandleMain(_, res)
   local html = toggleMain.ToggleMain(todos)
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local function ToggleHandleFooter(_, res)
   local html = todoFooter.TodoFooter(todos, filters)
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local function TodoHandleList(_, res)
   local html = todoList.TodoList(todos, filters)
-  res.statusCode = 200
-  res:setHeader('Content-Type', 'text/html')
-  res:finish(html)
+  render(res, html)
 end
 
 local charset = {}
@@ -290,9 +285,7 @@ local function Page(req, res)
 
   local html = page.Page(todos, filters)
 
-  res:setHeader('Content-Type', 'text/html')
-  res:setHeader('Content-Length', #html)
-  res:finish(html)
+  render(res, html)
 end
 
 local function NotFound(res)

@@ -28,6 +28,14 @@ function utility.countNotDone(todos)
   return count
 end
 
+function utility.count(todos)
+  local count = 0
+  for _, todo in pairs(todos) do
+      count = count + 1
+  end
+  return count
+end
+
 function utility.defChecked(todos)
   local uncompletedCount = utility.countNotDone(todos)
   local defaultChecked = false

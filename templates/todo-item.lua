@@ -3,6 +3,10 @@ local todoCheck = require('templates.todo-check')
 local todoEdit = require('templates.todo-edit')
 
 function module.TodoItem(todo, filterName)
+  if todo == nil then
+    print("todo cannot be nil")
+    return '\n'
+  end
   if (not todo.done and filterName == "Active") or (todo.done and filterName == "Completed") or filterName == "All" then
     local id = string.format('todo-%s', todo.id)
     local classes = { "" }

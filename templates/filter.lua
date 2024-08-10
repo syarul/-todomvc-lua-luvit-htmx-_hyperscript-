@@ -7,11 +7,12 @@ function module.Filter(filters)
       .. table.concat(utility.map(filters, function(filter)
         return
           '<li>'
-          ..  '<a ' .. (filter.selected and 'class="selected" ' or '')
-          ..  'href="' .. filter.url .. '" '
-          ..  '_="on click add .selected to me" '
+          ..  '<a '
+          ..    (filter.selected and 'class="selected" ' or '')
+          ..    'href="' .. filter.url .. '" '
+          ..    '_="on click add .selected to me" '
           ..  '>'
-          ..  filter.name
+          ..    filter.name
           ..  '</a>'
           ..'</li>'
       end), '\n')

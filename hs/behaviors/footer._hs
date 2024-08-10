@@ -7,5 +7,7 @@ behavior Footer
       -- need to first set to undefined in case the fetch may return empty which
       -- will may leave it in incorrect state
       set $clearCompleted to undefined
-      htmx.ajax("GET", "/completed", {target:".clear-completed", swap: "outerHTML"})
+      if $footerFooter
+        htmx.ajax("GET", "/completed", {target:".clear-completed", swap: "outerHTML"})
+      end
     send toggleFooter to <section.todoapp/>
