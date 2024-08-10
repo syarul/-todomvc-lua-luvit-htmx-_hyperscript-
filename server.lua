@@ -273,7 +273,7 @@ end
 
 local function Page(req, res)
   local cookieString = req.headers["cookie"]
-  local sessionId = cookieString and cookieString:match("sessionId=(.-);")
+  local sessionId = cookieString and cookieString:match("sessionId=([^;]+)")
 
   if not sessionId then
     local newCookieValue = randomString(32)
