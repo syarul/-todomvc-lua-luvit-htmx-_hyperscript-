@@ -15,14 +15,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Download and Install Lua 5.4
+        run: |
+          curl -LO https://www.lua.org/ftp/lua-5.4.4.tar.gz
+          tar -xzvf lua-5.4.4.tar.gz
+          cd lua-5.4.4
+          make linux
+          sudo make install
+
+      - name: Verify Lua Installation
+        run: |
+          lua -v
+
       - name: Install Lua and LuaSocket
         run: |
           sudo apt-get update
-          sudo apt-get install -y lua5.4 luarocks
+          sudo apt-get install luarocks
           sudo luarocks install luasocket
           sudo luarocks install luafilesystem
           sudo luarocks install lua-cjson
-          lua -v
 
       - name: Run Lua Socket Server
         run: |
