@@ -17,6 +17,7 @@ jobs:
 
       - name: Download and Install Lua 5.4
         run: |
+          sudo apt-get update
           curl -LO https://www.lua.org/ftp/lua-5.4.4.tar.gz
           tar -xzvf lua-5.4.4.tar.gz
           cd lua-5.4.4
@@ -27,9 +28,8 @@ jobs:
         run: |
           lua -v
 
-      - name: Install Lua and LuaSocket
+      - name: Install luarocks
         run: |
-          sudo apt-get update
           sudo apt-get install luarocks
           sudo luarocks install luasocket
           sudo luarocks install luafilesystem
