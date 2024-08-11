@@ -19,7 +19,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y lua5.4 luarocks
-          sudo luarocks install luasocket luafilesystem lua-cjson
+          sudo luarocks install luasocket
+          sudo luarocks install luafilesystem
+          sudo luarocks install lua-cjson
 
       - name: Run Lua Socket Server
         run: |
