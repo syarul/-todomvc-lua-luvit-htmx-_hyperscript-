@@ -6,7 +6,7 @@
       888     888       888       8    Y     888    d8'  `888b
      o888o   o888o     o888o     o8o        o888o o888o  o88888o
     ===========================================================
-            Build with LUA, LUVIT, HTMX & _HYPERSCRIPT
+            Build with LUA, LUASOCKET, HTMX & _HYPERSCRIPT
 
 [![Lua and Cypress Tests](https://github.com/syarul/todomvc-lua-luvit-htmx-_hyperscript/actions/workflows/luvit.yml/badge.svg)](https://github.com/syarul/todomvc-lua-luvit-htmx-_hyperscript/actions/workflows/luvit.yml)
 ### HTMX

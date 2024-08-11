@@ -15,24 +15,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Luvit
+      - name: Install Lua and LuaSocket
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl
-          curl -L https://github.com/luvit/lit/raw/master/get-lit.sh | sh
+          sudo apt-get install -y lua5.4 luarocks
+          sudo luarocks install luasocket
 
-      - name: Checkout subrepository
-        uses: actions/checkout@v2
-        with:
-          repository: syarul/todomvc-hs
-          path: hs
-
-      - name: Run Lua script
+      - name: Run Lua Socket Server
         run: |
-          ./luvit server.lua &
-
-      # - uses: browser-actions/setup-chrome@v1
-      # - run: chrome --version
+          lua server.lua &
 
       - uses: actions/setup-node@v3
         with:
@@ -52,5 +43,5 @@ jobs:
           npm run cypress:run
           # npm run cypress:run:chrome
 
-      - name: Stop Luvit Server
-        run: pkill luvit
+      - name: Stop Lua Socket Server
+        run: pkill lua

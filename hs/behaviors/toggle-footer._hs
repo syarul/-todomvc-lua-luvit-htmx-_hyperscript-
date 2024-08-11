@@ -2,7 +2,6 @@ behavior ToggleFooter
   on toggleFooter debounced at 20ms
     if $footerFooter
       fetch /todo-json?count=true then
-        log it
         if $todo.hasChildNodes() === false and it === '0'
           remove $footerFooter
           set $footerFooter to undefined
