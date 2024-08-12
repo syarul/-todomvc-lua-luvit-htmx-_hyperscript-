@@ -1,0 +1,68 @@
+name: Lua and Cypress Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download and Install Lua 5.4
+        run: |
+          sudo apt-get update
+          curl -LRO https://www.lua.org/ftp/lua-5.4.7.tar.gz
+          tar -xzvf lua-5.4.7.tar.gz
+          cd lua-5.4.7/
+          make linux
+          sudo make install
+
+      - name: Verify Lua Installation
+        run: |
+          lua -v
+
+      - name: Install Luarocks
+        run: |
+          wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz
+          tar zxpf luarocks-3.11.1.tar.gz
+          cd luarocks-3.11.1/
+          ./configure && make && sudo make install
+
+      - name: Install Luasocket lfs lua-cjson
+        run: |
+          sudo apt-get install -y luarocks
+          sudo luarocks install luasocket
+          sudo luarocks install luafilesystem
+          sudo luarocks install lua-cjson
+
+      - name: Run Lua Socket Server
+        run: |
+          lua server.lua &
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Clone cypress-example-todomvc
+        run: git clone https://github.com/cypress-io/cypress-example-todomvc.git cypress-example-todomvc
+
+      - name: Install Dependencies
+        run: |
+          cd cypress-example-todomvc
+          npm install
+
+      - name: Run Cypress Tests
+        run: |
+          cd cypress-example-todomvc
+          npm run cypress:run
+          # npm run cypress:run:chrome
+
+      - name: Stop Lua Socket Server
+        run: pkill lua
