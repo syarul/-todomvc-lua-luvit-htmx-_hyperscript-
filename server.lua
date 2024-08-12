@@ -313,7 +313,7 @@ local function handler(client, request, headers)
       local contentType = utility.getType(file)
       -- custom axe-core path
       if file == '/node_modules/axe-core/axe.min.js' then
-        file = './cypress-example-todomvc' .. file:gsub('^%.', '')
+        file = '/cypress-example-todomvc' .. file:gsub('^%.', '')
       end
       local content, err = utility.readStaticFile(file)
       if not err then
