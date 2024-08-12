@@ -37,7 +37,6 @@ jobs:
 
       - name: Install Luasocket lfs lua-cjson
         run: |
-          sudo apt-get install -y luarocks
           sudo luarocks install luasocket
           sudo luarocks install luafilesystem
           sudo luarocks install lua-cjson
