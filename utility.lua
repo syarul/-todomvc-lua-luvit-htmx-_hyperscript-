@@ -77,7 +77,7 @@ end
 
 function utility.getHeaders(client, headers)
   while true do
-    local line, err = client:receive()
+    local line, _ = client:receive()
     if line == "" or line == nil then
       break
     else
@@ -123,16 +123,19 @@ function utility.render(client, statusCode, body, customHeaders)
     headerString = headerString .. k .. ": " .. v .. "\r\n"
   end
   headerString = headerString .. "\r\n"
+  if type(body) == "table" then
+    body = _G.h(body)
+  end
   client:send(headerString .. (body or ""))
 end
 
 function utility.readStaticFile(filePath)
-  local file, err = io.open(getDir() .. filePath, "rb")  -- in binary mode
+  local file, err = io.open(_G.getDir() .. filePath, "rb")  -- in binary mode
   if not file then
       return nil, "Error opening file: " .. err
   end
 
-  local content = file:read("*all") 
+  local content = file:read("*all")
   file:close()
   return content
 end

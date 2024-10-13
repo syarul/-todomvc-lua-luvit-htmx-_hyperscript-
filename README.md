@@ -49,7 +49,10 @@ cd luarocks-3.11.1/
 sudo luarocks install luasocket
 sudo luarocks install luafilesystem
 sudo luarocks install lua-cjson
+sudo luarocks install luax
 ```
+
+See [https://github.com/syarul/luax](https://github.com/syarul/luax) more to understand how transpiling HTML is done in Lua.
 
 - run with `lua server.lua`
 - visit `http://localhost:8888`

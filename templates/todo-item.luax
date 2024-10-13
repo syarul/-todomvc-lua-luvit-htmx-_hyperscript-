@@ -1,0 +1,47 @@
+local module = {}
+local todoCheck = require('templates.todo-check')
+local todoEdit = require('templates.todo-edit')
+
+function module.TodoItem(todo, filterName)
+  if todo == nil then
+    print("todo cannot be nil")
+    return '\n'
+  end
+  if (not todo.done and filterName == "Active") or (todo.done and filterName == "Completed") or filterName == "All" then
+    local id = string.format('todo-%s', todo.id)
+    local classes = { "" }
+
+    if todo.done then
+      table.insert(classes, "completed")
+    end
+
+    if todo.editing then
+      table.insert(classes, "editing")
+    end
+
+    return <li id={id} class={table.concat(classes, " ")} _="on destroy my.querySelector('button').click()">
+      <div class="view">
+        {todoCheck.TodoCheck(todo)}
+        <label
+          hx-trigger="dblclick"
+          hx-patch="/edit-todo?id="..{id}
+          hx-target="next input"
+          hx-swap="outerHTML"
+          _="install TodoDblclick"
+        >{todo.title}</label>
+        <button
+          class="destroy"
+          hx-delete="/remove-todo?id="..{id}
+          hx-trigger="click"
+          hx-target="closest <li/>"
+          hx-swap="outerHTML"
+          _="install Destroy"
+        />
+      </div>
+      {todoEdit.EditTodo(todo)}
+    </li>
+  end
+  return '\n'
+end
+
+return module

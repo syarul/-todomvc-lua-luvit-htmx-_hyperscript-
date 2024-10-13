@@ -1,31 +1,34 @@
 local socket = require("socket")
-local url = require('socket.url') -- Use socket.url for URL parsing
-local json = require('cjson')     -- Use your json library
-local lfs = require('lfs')        -- LuaFileSystem for file operations (to replace fs)
+local url = require('socket.url')
+local json = require('cjson')
 
-function getDir()
+function _G.getDir()
   local handle
   local result
-  
+
   if os.getenv("OS") == "Windows_NT" then
     handle = io.popen("cd")
   else
     handle = io.popen("pwd")
   end
-  
+
   if handle then
     result = handle:read("*a"):gsub("%s+", "")
     handle:close()
   else
     result = "Failed to get directory"
   end
-  
+
   return result
 end
 
-package.path = package.path .. ";" ..  getDir() .. "/?.lua"
-package.path = package.path .. ";" ..  getDir() .. "/?/init.lua"
-package.cpath = package.cpath .. ";" ..  getDir() .. "/?.dll"
+package.path = package.path .. ";" ..  _G.getDir() .. "/?.lua"
+-- package.path = package.path .. ";" ..  _G.getDir() .. "/luax/?.lua"
+package.path = package.path .. ";" ..  _G.getDir() .. "/?/init.lua"
+package.cpath = package.cpath .. ";" ..  _G.getDir() .. "/?.dll"
+
+-- expose to global usage
+_G.h = require('luax')
 
 local utility = require('utility')
 
@@ -50,11 +53,11 @@ local filters = {
 local function Page(client, headers)
   local cookieString = headers["cookie"]
   local sessionId = cookieString and cookieString:match("sessionId=([^;]+)")
-  
+
   local setCookie
   if not sessionId then
     local newCookieValue = utility.randomString(32)
-    
+
     setCookie = "sessionId="
       .. newCookieValue
       .. "; Expires="
@@ -147,7 +150,7 @@ local function UpdateCount(client)
 end
 
 local function ToggleTodo(client, query)
-  local id = tonumber(query.id)
+  local id = tonumber(string.match(query.id, "%d+"))
   local done = query.done == 'true'
 
   local html
@@ -179,7 +182,7 @@ local function Completed(client)
 end
 
 local function RemoveTodo(client, queryId)
-  local id = tonumber(queryId)
+  local id = tonumber(string.match(queryId, "%d+"))
 
   for index, todo in ipairs(todos) do
     if todo.id == id then
@@ -192,7 +195,7 @@ local function RemoveTodo(client, queryId)
 end
 
 local function EditTodo(client, queryId)
-  local id = tonumber(queryId)
+  local id = tonumber(string.match(queryId, "%d+"))
 
   local html
   for _, todo in ipairs(todos) do
@@ -206,7 +209,7 @@ local function EditTodo(client, queryId)
 end
 
 local function UpdateTodo(client, query)
-  local id = tonumber(query.id)
+  local id = tonumber(string.match(query.id, "%d+"))
   local title = query.title
 
   local html
@@ -241,7 +244,7 @@ local function SwapJSON(client, queryAll)
 end
 
 local function TodoItem(client, queryId)
-  local id = tonumber(queryId)
+  local id = tonumber(string.match(queryId, "%d+"))
 
   local html
   for _, todo in ipairs(todos) do
@@ -271,31 +274,31 @@ local function handler(client, request, headers)
 
     elseif parsedUrl.path == "/todo-json" then
       TodoJSON(client, utility.parseQuery(queryString, "count"))
-    
+
     elseif parsedUrl.path == "/footer" then
       Footer(client)
 
     elseif parsedUrl.path == "/add-todo" then
       AddTodo(client, utility.parseQuery(queryString, "title"))
-    
+
     elseif parsedUrl.path == "/toggle-main" then
       ToggleMain(client)
-    
+
     elseif parsedUrl.path == "/update-count" then
       UpdateCount(client)
 
     elseif parsedUrl.path == "/toggle-todo" then
       ToggleTodo(client, utility.parseQuery(queryString))
-    
+
     elseif parsedUrl.path == "/toggle-all" then
       ToggleAll(client)
 
     elseif parsedUrl.path == "/completed" then
       Completed(client)
-    
+
     elseif parsedUrl.path == "/remove-todo" then
       RemoveTodo(client, utility.parseQuery(queryString, "id"))
-    
+
     elseif parsedUrl.path == "/edit-todo" then
       EditTodo(client, utility.parseQuery(queryString, "id"))
 
